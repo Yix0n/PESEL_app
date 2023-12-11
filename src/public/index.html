@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formularz</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .left-side, .right-side {
+            width: 45%;
+        }
+
+        input, button {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="left-side">
+        <h2>Czytaj informacje z podanego peselu</h2>
+        <label for="numberInput">Podaj liczbę:</label>
+        <input type="number" id="numberInput" name="numberInput" required>
+        <button onclick="sendData()">Czytaj</button>
+    </div>
+
+    <div class="right-side">
+        <h2>Wygeneruj Pesel</h2>
+        <label for="dobInput">Data urodzenia:</label>
+        <input type="date" id="dobInput" name="dobInput" required>
+
+        <label for="genderInput">Płeć:</label>
+        <select id="genderInput" name="genderInput" required>
+            <option value="M">Mężczyzna</option>
+            <option value="K">Kobieta</option>
+        </select>
+
+        <button onclick="generatePesel()">Generuj</button>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = new io();
+
+        function sendData() {
+            const numberValue = document.getElementById("numberInput").value;
+            
+
+            socket.emit("validate", {
+                pesel: numberValue
+            })
+            // socket emit - "emituje" sygnał do serwera
+        }
+
+        function generatePesel() {
+            const dobValue = document.getElementById("dobInput").value;
+            const genderValue = document.getElementById("genderInput").value;
+            
+            socket.emit("generate", {sex:genderValue, birth:dobValue})
+        }
+
+        socket.on("generateRes", (data)=>{
+            alert(data.pesel);
+        })
+
+        socket.on("validateRes", (data) => {
+            //socket on odbiera informacje od serwera
+        
+            if(data.type == "ERROR"){
+                alert("Wsytąpił błąd: " + data.content);
+                return;
+            }
+
+            alert(data.content);
+        })
+
+    </script>
+
+</body>
+</html>
