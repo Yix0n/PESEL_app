@@ -1,4 +1,4 @@
-import express, { IRoute } from 'express';
+import express, { Request, Response } from 'express';
 import http from 'http';
 import { Server } from 'socket.io';
 import path from 'path';
@@ -12,15 +12,15 @@ const io = new Server(server);
 
 const PORT = process.env.PORT || 3000;
 
-app.get("/", (req, res) => {
+app.get("/", (req: Request, res: Response) => {
     res.sendFile(path.join(process.cwd(), "/src/public/index.html"))
 })
 
-app.get("/wiki", (req, res) => {
+app.get("/wiki", (req: Request, res: Response) => {
     res.redirect("https://pl.wikipedia.org/wiki/PESEL")
 })
 
-app.get("/pope", (req, res) => {
+app.get("/pope", (req: Request, res: Response) => {
     res.redirect("https://media.discordapp.net/attachments/1035061988222578709/1183743814817546321/pope.jpg?ex=65897256&is=6576fd56&hm=c84bd37f5a3a5f6c3c4c3ddc0b8a6d614fb9da21ba6672dc4f350c72f9d9caa2&=&format=webp&width=469&height=614")
 })
 
